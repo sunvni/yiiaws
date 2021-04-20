@@ -1,0 +1,36 @@
+version: '3.2'
+services:
+  frontend:
+    build: frontend
+    ports:
+      - 80:80
+    volumes:
+      # Re-use local composer cache via host-volume
+      - ~/.composer-docker/cache:/root/.composer/cache:delegated
+      # Mount source-code for development
+      - ./:/app
+
+  backend:
+    build: backend
+    ports:
+      - 8080:80
+    volumes:
+      # Re-use local composer cache via host-volume
+      - ~/.composer-docker/cache:/root/.composer/cache:delegated
+      # Mount source-code for development
+      - ./:/app
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ubuntu
+      MYSQL_DATABASE: yiici
+      MYSQL_USER: yiici
+      MYSQL_PASSWORD: yiici
+    volumes: 
+      - "mysql-data:/var/lib/mysql:rw"
+  redis:
+    image: circleci/redis
+    ports:
+      - "6379:6379"
+volumes:
+  mysql-data: {}
